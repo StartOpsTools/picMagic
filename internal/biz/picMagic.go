@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"github.com/disintegration/imaging"
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
+	"github.com/qx66/picMagic/internal/conf"
+	"go.uber.org/zap"
 	"io"
 	"net/http"
 	"net/url"
@@ -13,12 +16,38 @@ import (
 type Pic struct {
 	Origin string
 	Style  map[string]PicStyle
+	logger *zap.Logger
 }
 
 type PicStyle struct {
 	Height int
 	Weight int
 }
+
+func NewPic(bootstrap *conf.Bootstrap, logger *zap.Logger) *Pic {
+	styles := make(map[string]PicStyle)
+	
+	for _, style := range bootstrap.Magic.Styles {
+		styles[style.Name] = PicStyle{
+			Height: int(style.Height),
+			Weight: int(style.Weight),
+		}
+	}
+	
+	logger.Info(
+		"启动参数",
+		zap.String("origin", bootstrap.Magic.Origin),
+		zap.Any("styles", styles),
+	)
+	
+	return &Pic{
+		Origin: bootstrap.Magic.Origin,
+		Style:  styles,
+		logger: logger,
+	}
+}
+
+var ProviderSet = wire.NewSet(NewPic)
 
 /*
 1. 当不使用样式访问的时候 (即: 无样式)，直接返回原图
@@ -40,17 +69,18 @@ func (pic *Pic) PicMagic(c *gin.Context) {
 	filepath := c.Param("filepath")
 	var realFilePath string
 	var style string
+	
+	//
 	if filepath == "/favicon.ico" {
 		return
 	}
-	
 	if filepath == "/" {
 		c.Data(200, "text/html; charset=utf-8", []byte("请输出正确的url资源, 不支持/"))
 		return
 	}
 	
+	//
 	paramSlice := strings.Split(filepath, "!")
-	
 	switch len(paramSlice) {
 	case 1:
 		// 没有携带样式标签

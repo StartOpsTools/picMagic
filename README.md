@@ -38,3 +38,8 @@ filepath中需要杜绝 ! 号的出现
 水印设置:
     文字水印
     图片水印
+
+
+##
+
+http://127.0.0.1:20000/cloud/icon/wangsu.jpg!xxx

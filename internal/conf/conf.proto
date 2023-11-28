@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "funnel/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  Magic magic = 1;
+}
+
+message Magic {
+  string origin = 1;
+  repeated Style styles = 2;
+}
+
+message Style {
+  string name = 1;
+  int32 weight = 2;
+  int32 height = 3;
+}

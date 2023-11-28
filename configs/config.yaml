@@ -1,1 +1,26 @@
-origin: "https://startops-static.oss-cn-hangzhou.aliyuncs.com"
+magic:
+  origin: "https://startops-static.oss-cn-hangzhou.aliyuncs.com"
+  styles:
+    - name: 128
+      weight: 128
+      height: 128
+
+    - name: 256
+      weight: 256
+      height: 256
+
+    - name: 360
+      weight: 360
+      height: 360
+
+    - name: 400
+      weight: 400
+      height: 400
+
+    - name: 512
+      weight: 512
+      height: 512
+
+    - name: 360x203
+      weight: 128
+      height: 203
